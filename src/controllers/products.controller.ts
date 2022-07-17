@@ -1,4 +1,13 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  Body,
+  Put,
+  Delete,
+} from '@nestjs/common';
 
 @Controller('products')
 export class ProductsController {
@@ -8,22 +17,45 @@ export class ProductsController {
   //   return `Tu eres el limin ${limit} y tu el offset ${offset}`;
   // }
 
-  @Get('')
-  getProducts(
+  @Get()
+  getAll(
     @Query('limit') limit = 100, // se difiere el tipado del valor de la asignación.
     @Query('offset') offset = 0,
     @Query('brand') brand: string,
   ) {
-    return `Tu eres el limit ${limit} y tu el offset ${offset} con esta marca ${brand}`;
+    return {
+      message: `Tu eres el limit ${limit} y tu el offset ${offset} con esta marca ${brand}`,
+    };
   }
 
   @Get('filter')
-  getProductFilter() {
-    return 'Yo soy un filter';
+  getFilter() {
+    return { message: 'Yo soy un filter' };
   }
 
   @Get(':productId')
-  getProduct(@Param('productId') productId: string) {
-    return `producto con el id ${productId}`;
+  getOne(@Param('productId') productId: string) {
+    return { message: `producto con el id ${productId}` };
+  }
+
+  @Post()
+  create(@Body() payload: any) {
+    return {
+      message: 'action de crear',
+      payload,
+    };
+  }
+  @Put(':productId')
+  update(@Param('productId') id: string, @Body() payload: any) {
+    return {
+      id,
+      message: 'Actualizando el producto',
+      payload,
+    };
+  }
+
+  @Delete(':productId')
+  delete(@Param('productId') id: string) {
+    return { message: 'eliminamos el producto', id };
   }
 }
