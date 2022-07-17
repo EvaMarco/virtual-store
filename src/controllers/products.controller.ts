@@ -9,15 +9,14 @@ import {
   Delete,
   HttpStatus,
   HttpCode,
+  Res,
 } from '@nestjs/common';
+
+import { ProductsService } from './../services/products.service';
 
 @Controller('products')
 export class ProductsController {
-  // @Get('products')
-  // getProducts(@Query() params: any) {
-  //   const { limit, offset } = params;
-  //   return `Tu eres el limin ${limit} y tu el offset ${offset}`;
-  // }
+  constructor(private productsService: ProductsService) {}
 
   @Get()
   getAll(
@@ -25,9 +24,10 @@ export class ProductsController {
     @Query('offset') offset = 0,
     @Query('brand') brand: string,
   ) {
-    return {
-      message: `Tu eres el limit ${limit} y tu el offset ${offset} con esta marca ${brand}`,
-    };
+    // return {
+    //   message: `Tu eres el limit ${limit} y tu el offset ${offset} con esta marca ${brand}`,
+    // };
+    return this.productsService.findAll();
   }
 
   @Get('filter')
@@ -36,38 +36,23 @@ export class ProductsController {
   }
 
   @Get(':productId')
-  @HttpCode(HttpStatus.ACCEPTED)
-  getOne(
-    // @Res() response: Response,
-    @Param('productId') productId: string,
-  ) {
-    // response.status(200).send({
-    //   message: `producto con el id ${productId}`,
-    // }); Este sería el formato en Express
-
-    return {
-      message: `producto con el id ${productId}`,
-    };
+  @HttpCode(HttpStatus.OK)
+  getOne(@Param('productId') productId: string) {
+    return this.productsService.findOne(+productId);
   }
 
   @Post()
   create(@Body() payload: any) {
-    return {
-      message: 'action de crear',
-      payload,
-    };
+    return this.productsService.create(payload);
   }
+
   @Put(':productId')
-  update(@Param('productId') id: string, @Body() payload: any) {
-    return {
-      id,
-      message: 'Actualizando el producto',
-      payload,
-    };
+  update(@Param('productId') id: number, @Body() payload: any) {
+    return this.productsService.update(id, payload);
   }
 
   @Delete(':productId')
   delete(@Param('productId') id: string) {
-    return { message: 'eliminamos el producto', id };
+    return this.productsService.delete(+id);
   }
 }
