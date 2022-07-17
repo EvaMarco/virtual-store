@@ -7,6 +7,8 @@ import {
   Body,
   Put,
   Delete,
+  HttpStatus,
+  HttpCode,
 } from '@nestjs/common';
 
 @Controller('products')
@@ -34,8 +36,18 @@ export class ProductsController {
   }
 
   @Get(':productId')
-  getOne(@Param('productId') productId: string) {
-    return { message: `producto con el id ${productId}` };
+  @HttpCode(HttpStatus.ACCEPTED)
+  getOne(
+    // @Res() response: Response,
+    @Param('productId') productId: string,
+  ) {
+    // response.status(200).send({
+    //   message: `producto con el id ${productId}`,
+    // }); Este sería el formato en Express
+
+    return {
+      message: `producto con el id ${productId}`,
+    };
   }
 
   @Post()
